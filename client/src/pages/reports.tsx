@@ -16,7 +16,8 @@ import {
   DollarSign,
   Users,
   Target,
-  Award
+  Award,
+  AlertCircle
 } from "lucide-react";
 import {
   LineChart,
@@ -81,8 +82,8 @@ export default function Reports() {
 
   const exportReport = () => {
     toast({
-      title: "📊 Exportando relatório...",
-      description: "Seu relatório será baixado em breve.",
+      title: "🚧 Em desenvolvimento",
+      description: "Funcionalidade de exportação será implementada em breve.",
     });
   };
 
@@ -114,6 +115,23 @@ export default function Reports() {
   return (
     <Layout>
       <div className="space-y-6">
+        {/* Development Notice */}
+        <Card className="border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="h-5 w-5 text-amber-600" />
+              <div>
+                <p className="font-medium text-amber-800 dark:text-amber-200">
+                  Relatórios em Desenvolvimento
+                </p>
+                <p className="text-sm text-amber-700 dark:text-amber-300">
+                  Esta seção está sendo implementada com dados reais da sua empresa.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold" data-testid="text-page-title">Relatórios</h1>

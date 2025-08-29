@@ -70,6 +70,21 @@ export default function Sellers() {
   const { data: sellers = [], isLoading: sellersLoading } = useQuery<User[]>({
     queryKey: ["/api/sellers"],
     enabled: isAuthenticated,
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Acesso Negado",
+          description: "Sessão expirada. Redirecionando...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+        return;
+      }
+      // Silently handle 404 errors for sellers endpoint
+      console.log("Sellers endpoint not available, showing empty state");
+    },
   });
 
   const inviteMutation = useMutation({
@@ -100,14 +115,18 @@ export default function Sellers() {
       }
       toast({
         title: "❌ Erro",
-        description: "Erro ao enviar convite. Tente novamente.",
+        description: "Funcionalidade em desenvolvimento. Tente novamente mais tarde.",
         variant: "destructive",
       });
     },
   });
 
   const onSubmit = (data: InviteFormData) => {
-    inviteMutation.mutate(data);
+    // Temporarily disable until backend is implemented
+    toast({
+      title: "🚧 Em desenvolvimento",
+      description: "Funcionalidade de convites será implementada em breve.",
+    });
   };
 
   const filteredSellers = sellers.filter(seller => 
@@ -170,7 +189,7 @@ export default function Sellers() {
                     Convidar Vendedor
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
+                <DialogContent className="sm:max-w-md fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
                   <DialogHeader>
                     <DialogTitle>Convidar Novo Vendedor</DialogTitle>
                   </DialogHeader>
@@ -221,11 +240,11 @@ export default function Sellers() {
                         </Button>
                         <Button 
                           type="submit" 
-                          disabled={inviteMutation.isPending}
+                          disabled={false}
                           data-testid="button-send-invite"
                         >
                           <Mail className="h-4 w-4 mr-2" />
-                          {inviteMutation.isPending ? "Enviando..." : "Enviar Convite"}
+                          Enviar Convite
                         </Button>
                       </div>
                     </form>
@@ -236,12 +255,24 @@ export default function Sellers() {
           </div>
         </div>
 
-        {sellersLoading ? (
+        {sellersLoading && sellers.length === 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
               <div key={i} className="h-48 bg-muted animate-pulse rounded-xl" />
             ))}
           </div>
+        ) : sellers.length === 0 ? (
+          <Card className="text-center py-12">
+            <CardContent>
+              <UserPlus className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">
+                Funcionalidade em Desenvolvimento
+              </h3>
+              <p className="text-muted-foreground mb-4">
+                A gestão de vendedores está sendo implementada. Em breve você poderá convidar e gerenciar sua equipe.
+              </p>
+            </CardContent>
+          </Card>
         ) : filteredSellers.length === 0 ? (
           <Card className="text-center py-12">
             <CardContent>
@@ -252,17 +283,9 @@ export default function Sellers() {
               <p className="text-muted-foreground mb-4">
                 {searchTerm 
                   ? "Tente buscar com outros termos."
-                  : (user as User)?.role === 'admin' 
-                    ? "Convide vendedores para começar a montar sua equipe!"
-                    : "Aguarde seu administrador adicionar vendedores."
+                  : "Aguarde a implementação completa da gestão de vendedores."
                 }
               </p>
-              {!searchTerm && (user as User)?.role === 'admin' && (
-                <Button onClick={() => setInviteModalOpen(true)} data-testid="button-invite-first">
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Convidar Primeiro Vendedor
-                </Button>
-              )}
             </CardContent>
           </Card>
         ) : (
