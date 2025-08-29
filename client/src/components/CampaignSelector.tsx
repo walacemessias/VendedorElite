@@ -6,13 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Trophy } from "lucide-react";
-
-interface Campaign {
-  id: string;
-  name: string;
-  prizeEmoji?: string;
-  prizeDescription?: string;
-}
+import type { Campaign } from "@shared/schema";
 
 interface CampaignSelectorProps {
   campaigns: Campaign[];
