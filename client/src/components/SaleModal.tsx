@@ -145,7 +145,7 @@ export function SaleModal({ open, onOpenChange, campaignId, isSubtraction = fals
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-md" data-testid="dialog-sale-modal">
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto" data-testid="dialog-sale-modal">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               {isSubtraction ? '❌' : '💰'} {isSubtraction ? 'Subtrair Venda' : 'Lançar Nova Venda'}
