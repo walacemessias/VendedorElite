@@ -29,7 +29,7 @@ export default function Layout({ children }: LayoutProps) {
   const navigation = [
     { name: "Dashboard", href: "/", icon: BarChart3 },
     { name: "Campanhas", href: "/campaigns", icon: Trophy },
-    { name: "Vendedores", href: "/team", icon: Users },
+    { name: "Vendedores", href: "/sellers", icon: Users },
     { name: "Relatórios", href: "/reports", icon: BarChart3 },
     { name: "Modo TV", href: "/tv", icon: Tv },
     { name: "Configurações", href: "/settings", icon: Settings },
