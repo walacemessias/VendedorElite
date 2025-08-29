@@ -225,7 +225,7 @@ export default function Campaigns() {
                   Nova Campanha
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogContent className="sm:max-w-2xl w-[95vw] max-w-[95vw] sm:w-full max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>
                     {editingCampaign ? 'Editar Campanha' : 'Criar Nova Campanha'}

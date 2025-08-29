@@ -26,7 +26,7 @@ export default function Sidebar({ className = "", onItemClick }: SidebarProps) {
   const navigation = [
     { name: "Dashboard", href: "/", icon: BarChart3 },
     { name: "Campanhas", href: "/campaigns", icon: Trophy },
-    { name: "Equipe", href: "/team", icon: Users },
+    { name: "Vendedores", href: "/sellers", icon: Users },
     { name: "Relatórios", href: "/reports", icon: FileText },
     { name: "Modo TV", href: "/tv", icon: Tv },
     { name: "Configurações", href: "/settings", icon: Settings },

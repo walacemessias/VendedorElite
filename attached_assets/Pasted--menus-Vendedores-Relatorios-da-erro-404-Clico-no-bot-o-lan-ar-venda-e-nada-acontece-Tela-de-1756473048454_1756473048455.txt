@@ -1,0 +1,27 @@
+-menus Vendedores, Relatorios,  da erro 404 
+
+-Clico no botão lançar venda e nada acontece
+
+-Tela de campanha o pop-up de criar ua nova campanha não esta abrindo ao centro da tela
+
+-os ajustes de cor primaria e secundaria da erro ao tentar salvar alterações, pode retirar essa funcionalidade
+
+-o modo claro e modo escuro ao escolher nas configurações ou no botão do menu superior nada acontece
+
+-não tem nada nas configurações de ajustes de sons ao ter uma venda ao ir para o podio ou aldo do tipo, esses sons e o suco de dopamina do negocio, além de a cada venda lançada aparecer um pop-up lateral no caot de baixo para todos, além do botão lançar uma venda, preciso que exista o botão vermelho com um simobolo de menos para caso ele queria subtrair o valor de uma venda
+
+-não estou conseguindo subir o logo do cliente, além de sugerir tamanho sugira tbm dimenssões que vão ficar boas
+
+-o sistema não esta nada responsivo e preciso que ele fique pois muitos vendedores vão usar pelo celular o app
+
+-o botão modo TV do cabeçalho não funciona
+
+-Preciso desse ranking mostrando estremamente bonito e diferente de tudo bem desenhado com lindos efeitos visuais, além disso, pode retirar as atividades recentes para que o ranking fique bem grande e chamativo quero foto do premio, foto e nome do vendedor flutuando junto e o descritivo do que e o premio na parte de baixo do grafico
+
+-ao cadastrar as premiações dentro das campanhas, ja de a opção de subir imagens para o premio e dar nome para ele além de já colocar a meta geral da campanha
+
+-super importante que o pop-up de venda apareça para todos os usuarios e chegue notificação para todos eles mas os sons só tocam no usuario que fez a venda
+
+-o modo TV preciso que o foco maximo dele seja no ranking do top 3
+
+-nas configurações precisamos dar uma opção funcional ali de receber dados via webhook mapeando pelo nome do vendedor, ao fazer essa configuração de webhook abre a lista de todos os vendedores cadastrados e a frente um campo em branco para colocar o exato nome do vendedor no sistema integrado assim ele vai mapear essas vendas por esse mapeamento

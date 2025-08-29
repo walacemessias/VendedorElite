@@ -45,9 +45,10 @@ interface SaleModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   campaignId: string;
+  isSubtraction?: boolean;
 }
 
-export function SaleModal({ open, onOpenChange, campaignId }: SaleModalProps) {
+export function SaleModal({ open, onOpenChange, campaignId, isSubtraction = false }: SaleModalProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -147,7 +148,7 @@ export function SaleModal({ open, onOpenChange, campaignId }: SaleModalProps) {
         <DialogContent className="sm:max-w-md" data-testid="dialog-sale-modal">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              💰 Lançar Nova Venda
+              {isSubtraction ? '❌' : '💰'} {isSubtraction ? 'Subtrair Venda' : 'Lançar Nova Venda'}
             </DialogTitle>
           </DialogHeader>
 

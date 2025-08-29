@@ -9,9 +9,11 @@ import {
   Users, 
   Percent,
   Plus,
+  Minus,
   Tv,
   DollarSign
 } from "lucide-react";
+import { useLocation } from "wouter";
 import { CampaignSelector } from "./CampaignSelector";
 import { Leaderboard } from "./Leaderboard";
 import { SaleModal } from "./SaleModal";
@@ -30,8 +32,10 @@ interface DashboardStats {
 export default function Dashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [selectedCampaignId, setSelectedCampaignId] = useState<string>("");
   const [saleModalOpen, setSaleModalOpen] = useState(false);
+  const [subtractionModalOpen, setSubtractionModalOpen] = useState(false);
 
   // WebSocket connection for real-time updates
   useEffect(() => {
@@ -125,18 +129,29 @@ export default function Dashboard() {
           />
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <Button 
             onClick={() => setSaleModalOpen(true)}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            className="bg-green-600 text-white hover:bg-green-700"
             data-testid="button-launch-sale"
           >
             <Plus className="mr-2 h-4 w-4" />
             Lançar Venda
           </Button>
           
+          <Button 
+            onClick={() => setSubtractionModalOpen(true)}
+            variant="destructive"
+            size="icon"
+            data-testid="button-subtract-sale"
+            title="Subtrair Venda"
+          >
+            <Minus className="h-4 w-4" />
+          </Button>
+          
           <Button
             variant="outline"
+            onClick={() => setLocation('/tv')}
             data-testid="button-tv-mode"
           >
             <Tv className="mr-2 h-4 w-4" />
@@ -295,6 +310,15 @@ export default function Dashboard() {
         onOpenChange={setSaleModalOpen}
         campaignId={selectedCampaignId}
         data-testid="sale-modal"
+      />
+      
+      {/* Subtraction Modal */}
+      <SaleModal
+        open={subtractionModalOpen}
+        onOpenChange={setSubtractionModalOpen}
+        campaignId={selectedCampaignId}
+        isSubtraction={true}
+        data-testid="subtraction-modal"
       />
     </div>
   );

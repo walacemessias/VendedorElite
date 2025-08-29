@@ -11,6 +11,8 @@ import Dashboard from "@/pages/dashboard";
 import Campaigns from "@/pages/campaigns";
 import TVMode from "@/pages/tv-mode";
 import Settings from "@/pages/settings";
+import Sellers from "@/pages/sellers";
+import Reports from "@/pages/reports";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -23,6 +25,8 @@ function Router() {
         <>
           <Route path="/" component={Dashboard} />
           <Route path="/campaigns" component={Campaigns} />
+          <Route path="/sellers" component={Sellers} />
+          <Route path="/reports" component={Reports} />
           <Route path="/tv" component={TVMode} />
           <Route path="/settings" component={Settings} />
         </>
