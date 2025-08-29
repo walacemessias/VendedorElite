@@ -32,13 +32,14 @@ import {
   Building2,
   Moon,
   Sun,
-  Shield
+  Shield,
+  Webhook,
+  Users,
+  Save
 } from "lucide-react";
 
 const companySchema = z.object({
   name: z.string().min(1, "Nome da empresa é obrigatório"),
-  primaryColor: z.string().optional(),
-  secondaryColor: z.string().optional(),
 });
 
 export default function Settings() {
@@ -65,8 +66,6 @@ export default function Settings() {
     resolver: zodResolver(companySchema),
     defaultValues: {
       name: '',
-      primaryColor: '#10b981',
-      secondaryColor: '#f59e0b',
     },
   });
 
@@ -92,8 +91,6 @@ export default function Settings() {
     if (company) {
       form.reset({
         name: company.name || '',
-        primaryColor: company.primaryColor || '#10b981',
-        secondaryColor: company.secondaryColor || '#f59e0b',
       });
     }
   }, [company, form]);
@@ -237,7 +234,8 @@ export default function Settings() {
                         </ObjectUploader>
                       </div>
                       <p className="text-xs text-muted-foreground mt-2">
-                        Formatos aceitos: PNG, JPG, SVG. Tamanho máximo: 5MB
+                        Formatos aceitos: PNG, JPG, SVG. Tamanho máximo: 5MB<br/>
+                        Dimensões recomendadas: 200x200px (quadrado) ou 400x100px (horizontal)
                       </p>
                     </div>
 
@@ -261,59 +259,6 @@ export default function Settings() {
                           )}
                         />
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={form.control}
-                            name="primaryColor"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Cor Primária</FormLabel>
-                                <FormControl>
-                                  <div className="flex items-center gap-3">
-                                    <Input 
-                                      {...field} 
-                                      type="color"
-                                      className="w-16 h-10 p-1 rounded-md"
-                                      data-testid="input-primary-color"
-                                    />
-                                    <Input 
-                                      {...field} 
-                                      placeholder="#10b981"
-                                      className="flex-1"
-                                    />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name="secondaryColor"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Cor Secundária</FormLabel>
-                                <FormControl>
-                                  <div className="flex items-center gap-3">
-                                    <Input 
-                                      {...field} 
-                                      type="color"
-                                      className="w-16 h-10 p-1 rounded-md"
-                                      data-testid="input-secondary-color"
-                                    />
-                                    <Input 
-                                      {...field} 
-                                      placeholder="#f59e0b"
-                                      className="flex-1"
-                                    />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
 
                         <Button 
                           type="submit" 
@@ -377,6 +322,94 @@ export default function Settings() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Webhook Configuration */}
+            {user?.role === 'admin' && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Webhook className="h-5 w-5" />
+                    Integração com Webhook
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">URL do Webhook</label>
+                    <Input 
+                      placeholder="https://seu-sistema.com/webhook/vendas"
+                      data-testid="input-webhook-url"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Receba notificações automáticas de novas vendas em seu sistema
+                    </p>
+                  </div>
+
+                  <Separator />
+
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium flex items-center gap-2">
+                      <Users className="h-4 w-4" />
+                      Mapeamento de Vendedores
+                    </label>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      Vincule os IDs do seu sistema aos vendedores da plataforma
+                    </p>
+
+                    {/* Seller Mapping Fields */}
+                    <div className="space-y-2 max-h-60 overflow-y-auto">
+                      <div className="flex gap-2 items-center">
+                        <Input 
+                          placeholder="ID no seu sistema"
+                          className="flex-1"
+                          data-testid="input-external-id-1"
+                        />
+                        <span className="text-sm">=</span>
+                        <select className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm">
+                          <option value="">Selecione um vendedor</option>
+                          <option value="user1">João Silva</option>
+                          <option value="user2">Maria Santos</option>
+                          <option value="user3">Pedro Costa</option>
+                        </select>
+                      </div>
+                      <div className="flex gap-2 items-center">
+                        <Input 
+                          placeholder="ID no seu sistema"
+                          className="flex-1"
+                          data-testid="input-external-id-2"
+                        />
+                        <span className="text-sm">=</span>
+                        <select className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm">
+                          <option value="">Selecione um vendedor</option>
+                          <option value="user1">João Silva</option>
+                          <option value="user2">Maria Santos</option>
+                          <option value="user3">Pedro Costa</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <Button variant="outline" className="w-full" data-testid="button-add-mapping">
+                      + Adicionar Mapeamento
+                    </Button>
+                  </div>
+
+                  <div className="bg-muted/50 rounded-lg p-3">
+                    <p className="text-xs font-medium mb-1">Formato do Webhook:</p>
+                    <pre className="text-xs text-muted-foreground">
+{`{
+  "seller_id": "123",
+  "amount": 1500.00,
+  "timestamp": "2024-01-29T10:30:00Z"
+}`}
+                    </pre>
+                  </div>
+
+                  <Button className="w-full" data-testid="button-save-webhook">
+                    <Save className="mr-2 h-4 w-4" />
+                    Salvar Configurações de Webhook
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Sidebar */}

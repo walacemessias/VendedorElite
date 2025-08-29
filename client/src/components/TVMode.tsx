@@ -2,9 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { X, Trophy, Crown, Medal, TrendingUp, Target, Star } from "lucide-react";
 import { Confetti } from "./Confetti";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useSoundEffects } from "@/hooks/useSoundEffects";
+import { NotificationPopup } from "./NotificationPopup";
 
 interface TVModeProps {
   campaignId: string;
@@ -13,6 +17,16 @@ interface TVModeProps {
 
 export function TVMode({ campaignId, onExit }: TVModeProps) {
   const [showConfetti, setShowConfetti] = useState(false);
+  const [notification, setNotification] = useState<{ title: string; message: string } | null>(null);
+  const { playCelebrationSound, playNotificationSound } = useSoundEffects();
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const { data: leaderboard = [] } = useQuery({
     queryKey: ["/api/campaigns", campaignId, "leaderboard"],
@@ -38,7 +52,15 @@ export function TVMode({ campaignId, onExit }: TVModeProps) {
         if (message.type === 'NEW_SALE') {
           // Trigger confetti celebration
           setShowConfetti(true);
-          setTimeout(() => setShowConfetti(false), 5000);
+          playCelebrationSound();
+          setNotification({
+            title: `🎉 Nova Venda!`,
+            message: `${message.sellerName} acabou de realizar uma venda de R$ ${message.amount.toLocaleString('pt-BR')}!`
+          });
+          setTimeout(() => {
+            setShowConfetti(false);
+            setNotification(null);
+          }, 5000);
         }
       };
       
@@ -48,162 +70,228 @@ export function TVMode({ campaignId, onExit }: TVModeProps) {
     } catch (error) {
       console.error('WebSocket connection failed:', error);
     }
-  }, []);
+  }, [playCelebrationSound]);
+
+  const getPositionIcon = (position: number) => {
+    switch (position) {
+      case 1:
+        return <Crown className="h-12 w-12 text-yellow-500" />;
+      case 2:
+        return <Medal className="h-10 w-10 text-gray-400" />;
+      case 3:
+        return <Medal className="h-10 w-10 text-amber-600" />;
+      default:
+        return <Star className="h-8 w-8 text-primary" />;
+    }
+  };
+
+  const getPositionColor = (position: number) => {
+    switch (position) {
+      case 1:
+        return "from-yellow-500/20 to-yellow-500/5 border-yellow-500/50";
+      case 2:
+        return "from-gray-400/20 to-gray-400/5 border-gray-400/50";
+      case 3:
+        return "from-amber-600/20 to-amber-600/5 border-amber-600/50";
+      default:
+        return "from-primary/20 to-primary/5 border-primary/50";
+    }
+  };
+
+  const top3 = leaderboard.slice(0, 3);
+  const restOfLeaderboard = leaderboard.slice(3, 10);
 
   return (
-    <div className="fixed inset-0 bg-background z-50" data-testid="tv-mode-overlay">
+    <div className="fixed inset-0 bg-gradient-to-br from-background via-muted/20 to-background z-50" data-testid="tv-mode-overlay">
       {showConfetti && <Confetti />}
+      
+      {notification && (
+        <NotificationPopup
+          title={notification.title}
+          message={notification.message}
+          type="sale"
+          onClose={() => setNotification(null)}
+        />
+      )}
       
       <div className="h-full flex flex-col">
         {/* TV Mode Header */}
-        <div className="bg-primary p-6 text-center relative">
-          <h1 className="text-4xl font-bold text-primary-foreground">
-            🏆 RANKING DE VENDAS 🏆
-          </h1>
-          <p className="text-xl text-primary-foreground mt-2">
-            {campaign?.name} - {campaign?.prizeDescription}
-          </p>
-          
-          <Button
-            onClick={onExit}
-            variant="destructive"
-            className="absolute top-4 right-4"
-            data-testid="button-exit-tv"
-          >
-            <X className="mr-2 h-4 w-4" />
-            Sair do Modo TV
-          </Button>
+        <div className="bg-gradient-to-r from-primary via-primary/90 to-primary p-6 relative shadow-xl">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                className="text-5xl"
+              >
+                {campaign?.prizeEmoji || "🏆"}
+              </motion.div>
+              <div>
+                <h1 className="text-4xl font-bold text-primary-foreground">
+                  {campaign?.name || "RANKING DE VENDAS"}
+                </h1>
+                <p className="text-xl text-primary-foreground/90 mt-1">
+                  🎁 Prêmio: {campaign?.prizeDescription || "A definir"}
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-6">
+              <div className="text-right text-primary-foreground">
+                <p className="text-3xl font-bold">
+                  {currentTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                </p>
+                <p className="text-lg opacity-90">
+                  {currentTime.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+                </p>
+              </div>
+              <Button
+                onClick={onExit}
+                variant="destructive"
+                size="lg"
+                data-testid="button-exit-tv"
+              >
+                <X className="mr-2 h-5 w-5" />
+                Sair
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* TV Mode Content */}
-        <div className="flex-1 p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
-            {/* Leaderboard */}
-            <div className="lg:col-span-2">
-              <Card className="h-full">
-                <CardHeader>
-                  <CardTitle className="text-3xl font-bold">
-                    🥇 TOP VENDEDORES
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {leaderboard.slice(0, 5).map((entry: any, index: number) => {
-                    const position = index + 1;
-                    const getRankEmoji = (pos: number) => {
-                      switch (pos) {
-                        case 1: return "🥇";
-                        case 2: return "🥈";
-                        case 3: return "🥉";
-                        default: return pos.toString();
-                      }
-                    };
+        <div className="flex-1 p-8 overflow-hidden">
+          <div className="h-full max-w-7xl mx-auto">
+            {/* Top 3 Podium */}
+            <div className="grid grid-cols-3 gap-6 mb-6 h-[60%]">
+              {top3.map((entry: any, index: number) => {
+                const position = index + 1;
+                return (
+                  <motion.div
+                    key={entry.userId}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.2 }}
+                    className={`relative ${position === 1 ? 'transform scale-110 z-10' : ''}`}
+                  >
+                    <Card className={`h-full bg-gradient-to-br ${getPositionColor(position)} border-2 shadow-xl`}>
+                      <CardContent className="flex flex-col items-center justify-center h-full p-6">
+                        {/* Position Icon */}
+                        <motion.div
+                          animate={{ 
+                            rotate: position === 1 ? [0, 10, -10, 0] : 0,
+                            scale: position === 1 ? [1, 1.1, 1] : 1
+                          }}
+                          transition={{ 
+                            duration: 2,
+                            repeat: Infinity,
+                            repeatDelay: 3
+                          }}
+                        >
+                          {getPositionIcon(position)}
+                        </motion.div>
 
-                    const getBgClass = (pos: number) => {
-                      switch (pos) {
-                        case 1: return "bg-yellow-50 dark:bg-yellow-900/20";
-                        case 2: return "bg-gray-50 dark:bg-gray-900/20";
-                        case 3: return "bg-amber-50 dark:bg-amber-900/20";
-                        default: return "bg-muted/30";
-                      }
-                    };
+                        {/* Seller Avatar and Name */}
+                        <div className="mt-4 text-center">
+                          <Avatar className="h-24 w-24 border-4 border-background shadow-lg mx-auto">
+                            <AvatarImage src={entry.user.profileImageUrl} />
+                            <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary to-primary/60">
+                              {entry.user.firstName?.[0]}{entry.user.lastName?.[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          <h2 className="text-2xl font-bold mt-3">
+                            {entry.user.firstName} {entry.user.lastName}
+                          </h2>
+                          <Badge className="mt-2" variant="secondary">
+                            {entry.user.role === 'admin' ? 'Gerente' : 'Vendedor'}
+                          </Badge>
+                        </div>
 
+                        {/* Sales Stats */}
+                        <div className="mt-6 space-y-3 w-full">
+                          <div className="bg-background/50 rounded-lg p-3 text-center">
+                            <p className="text-sm text-muted-foreground">Total de Vendas</p>
+                            <p className="text-3xl font-bold text-primary">
+                              R$ {entry.totalSales.toLocaleString('pt-BR')}
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <div className="bg-background/50 rounded-lg p-2 flex-1 text-center">
+                              <p className="text-xs text-muted-foreground">Vendas</p>
+                              <p className="text-xl font-bold">{entry.salesCount}</p>
+                            </div>
+                            <div className="bg-background/50 rounded-lg p-2 flex-1 text-center">
+                              <p className="text-xs text-muted-foreground">Ticket Médio</p>
+                              <p className="text-xl font-bold">
+                                R$ {Math.round(entry.totalSales / entry.salesCount).toLocaleString('pt-BR')}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Achievement Badge */}
+                        {position === 1 && (
+                          <motion.div
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="mt-4"
+                          >
+                            <Badge className="text-lg px-4 py-1" variant="default">
+                              🔥 Em chamas!
+                            </Badge>
+                          </motion.div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Rest of Leaderboard */}
+            <Card className="h-[35%]">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Próximas Posições
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-3">
+                  {restOfLeaderboard.map((entry: any, index: number) => {
+                    const position = index + 4;
                     return (
                       <div
                         key={entry.userId}
-                        className={`flex items-center justify-between p-6 rounded-lg ${getBgClass(position)}`}
-                        data-testid={`tv-leaderboard-entry-${position}`}
+                        className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
                       >
-                        <div className="flex items-center space-x-6">
-                          <span className="text-4xl">{getRankEmoji(position)}</span>
-                          <Avatar className="h-16 w-16">
+                        <div className="flex items-center gap-3">
+                          <Badge variant="outline" className="px-2 py-1">
+                            {position}°
+                          </Badge>
+                          <Avatar className="h-10 w-10">
                             <AvatarImage src={entry.user.profileImageUrl} />
-                            <AvatarFallback className="text-xl">
-                              {entry.user.firstName?.[0]}
-                              {entry.user.lastName?.[0]}
+                            <AvatarFallback className="text-sm">
+                              {entry.user.firstName?.[0]}{entry.user.lastName?.[0]}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <h3 className="text-2xl font-bold">
+                            <p className="font-semibold">
                               {entry.user.firstName} {entry.user.lastName}
-                            </h3>
-                            <p className="text-lg text-muted-foreground">
-                              {entry.user.role === 'admin' ? 'Gerente de Vendas' : 'Vendedor'}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              {entry.salesCount} vendas
                             </p>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="text-3xl font-bold text-primary">
-                            R$ {entry.totalSales.toLocaleString('pt-BR')}
-                          </p>
-                          <p className="text-lg text-muted-foreground">
-                            {entry.salesCount} vendas
-                          </p>
-                        </div>
-                        {position === 1 && campaign?.prizeEmoji && (
-                          <div className="ml-6 animate-bounce">
-                            <span className="text-4xl">{campaign.prizeEmoji}</span>
-                          </div>
-                        )}
+                        <p className="text-lg font-bold text-primary">
+                          R$ {entry.totalSales.toLocaleString('pt-BR')}
+                        </p>
                       </div>
                     );
                   })}
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Performance Chart & Stats */}
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-2xl font-bold">
-                    📊 VENDAS DIÁRIAS
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* Simplified chart representation */}
-                    <div className="flex items-end justify-between h-40 gap-2">
-                      {[45000, 52000, 38000, 61000, 48000].map((value, index) => {
-                        const height = (value / 61000) * 100;
-                        const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'];
-                        return (
-                          <div key={index} className="flex flex-col items-center gap-2">
-                            <div
-                              className="bg-primary rounded-t w-12 transition-all duration-1000"
-                              style={{ height: `${height}%` }}
-                            />
-                            <span className="text-sm font-medium">{days[index]}</span>
-                            <span className="text-xs text-muted-foreground">
-                              {(value / 1000).toFixed(0)}k
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl font-bold">
-                    🎯 META DO MÊS
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-primary mb-2">78%</div>
-                    <p className="text-muted-foreground">R$ 485.2K de R$ 620K</p>
-                    <div className="w-full bg-muted rounded-full h-4 mt-4">
-                      <div 
-                        className="bg-primary h-4 rounded-full transition-all duration-1000"
-                        style={{ width: '78%' }}
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
