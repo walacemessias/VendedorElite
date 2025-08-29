@@ -1,0 +1,68 @@
+Com certeza! O seu prompt contém ótimas ideias para a evolução do sistema. Organizei tudo em categorias para facilitar o entendimento e o desenvolvimento.
+
+Aqui está o seu prompt, reestruturado como um resumo de projeto para a plataforma VendedorElite.
+
+Projeto de Evolução da Plataforma: VendedorElite
+O objetivo é transformar a ferramenta de gamificação de vendas em uma plataforma mais robusta, personalizável, responsiva e focada na experiência do usuário, tanto para o administrador quanto para o vendedor.
+
+1. Branding e Customização da Empresa
+Nome da Plataforma: O nome oficial do sistema será VendedorElite.
+
+Logo da Empresa: Permitir que o administrador da conta faça o upload da logomarca da sua empresa.
+
+Cabeçalho Personalizado: A logo enviada e o nome da empresa devem substituir a logo e o nome "VendedorElite" no cabeçalho do sistema, oferecendo uma experiência de white-label.
+
+Identidade Visual: Alterar o ícone principal do sistema (ex: na logo padrão e favicon) de um troféu (🏆) para um cifrão ($), reforçando o foco em vendas e finanças.
+
+2. Gestão de Campanhas e Premiações
+Seleção Rápida de Campanhas: Implementar um menu suspenso (dropdown) no cabeçalho principal que lista todas as campanhas ativas. Ao selecionar uma campanha, todo o dashboard (gráficos, rankings, etc.) deve ser atualizado instantaneamente para exibir os dados daquela campanha.
+
+Personalização de Prêmios: Ao criar ou editar uma campanha, o administrador deve poder:
+
+Trocar o Emoji da Premiação: Escolher um emoji customizado que representará o prêmio.
+
+Enviar Imagem do Prêmio: Fazer o upload de uma imagem específica para o prêmio (ex: foto de um iPhone, vale-viagem, etc.). Esta imagem deve aparecer flutuando ao lado da foto do vendedor que está liderando o ranking.
+
+3. Interface e Experiência do Usuário (UI/UX)
+Responsividade Total: A plataforma deve ser totalmente responsiva, garantindo uma experiência de uso perfeita em desktops, tablets e smartphones.
+
+Modo Claro (Light Mode): Implementar a funcionalidade do modo claro, permitindo ao usuário alternar entre o tema escuro (atual) e um tema claro.
+
+Gráficos Impactantes: Reformular os gráficos do dashboard principal e do Modo TV para serem mais chamativos e dinâmicos, com animações que cativem a atenção.
+
+Ações Rápidas Funcionais:
+
+Tornar todos os botões de ação rápida (ex: "Lançar Venda", "Criar Campanha") plenamente funcionais.
+
+Remover o botão "Modo TV" da seção de ações rápidas (ele pode ser movido para o menu principal ou cabeçalho).
+
+4. Painel Exclusivo do Vendedor
+Acesso Restrito: Criar uma visão de painel exclusiva para o usuário com perfil de "Vendedor".
+
+Lançamento de Vendas: O vendedor só pode lançar vendas para si mesmo. O campo de seleção de vendedor deve ser travado com seu nome.
+
+Visualização de Campanhas: O vendedor só pode visualizar os dados e rankings das campanhas nas quais ele foi explicitamente adicionado pelo administrador.
+
+5. Lógica de Negócio e Gestão de Usuários
+Correção de Lançamentos: Implementar a funcionalidade de subtrair ou excluir uma venda. Isso é crucial para corrigir lançamentos feitos por engano.
+
+Fluxo de Onboarding de Vendedor:
+
+Convite por E-mail: Ao criar um novo usuário, o sistema deve disparar automaticamente um e-mail de convite para ele.
+
+Primeiro Acesso: Ao clicar no link do convite e acessar pela primeira vez, o vendedor será direcionado para uma tela onde deverá:
+
+Definir sua Senha: Criar uma senha pessoal e segura.
+
+Enviar Foto de Perfil: Fazer o upload de uma foto de perfil, com uma mensagem explicando a importância da foto para o ranking e para a competição.
+
+6. Efeitos e Notificações ("O Suco de Dopamina")
+Efeitos Sonoros: Garantir que todos os efeitos sonoros (especialmente o de nova venda) estejam funcionando perfeitamente, pois são essenciais para o engajamento.
+
+Notificações Push: Implementar notificações push no navegador e/ou mobile para informar sobre novas vendas em tempo real.
+
+Celebração no Modo TV:
+
+Aumentar significativamente o tamanho do pop-up de notificação de nova venda.
+
+Adicionar um efeito de confetes na tela quando uma nova venda é exibida no Modo TV, tornando a celebração ainda mais vibrante.
